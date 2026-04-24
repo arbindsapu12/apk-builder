@@ -1,11 +1,46 @@
-name: Build APK
+name: Build APK & AAB
 
 on:
   workflow_dispatch:
+    inputs:
+      website:
+        description: "Enter Website URL"
+        required: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo "Workflow working ✅"
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android
+        uses: android-actions/setup-android@v3
+
+      - name: Give Permission
+        run: chmod +x gradlew
+
+      - name: Replace URL
+        run: |
+          sed -i "s|https://example.com|${{ github.event.inputs.website }}|g" app/src/main/java/com/example/app/MainActivity.java
+
+      - name: Build APK
+        run: ./gradlew assembleDebug
+
+      - name: Build AAB
+        run: ./gradlew bundleRelease
+
+      - name: Upload Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-files
+          path: |
+            app/build/outputs/apk/**/*.apk
+            app/build/outputs/bundle/**/*.aab
