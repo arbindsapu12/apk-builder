@@ -4,4 +4,4 @@
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-"$DIR/gradle/wrapper/gradle-wrapper.jar" "$@"
+java -jar "$DIR/gradle/wrapper/gradle-wrapper.jar" "$@"
