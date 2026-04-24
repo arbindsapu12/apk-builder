@@ -16,27 +16,36 @@ jobs:
         with:
           node-version: 18
 
-      # ✅ FIX: npm project create
+      # ✅ npm project create
       - name: Init npm
         run: npm init -y
 
       - name: Install Capacitor
         run: npm install @capacitor/core @capacitor/cli
 
-      - name: Init Capacitor App
+      # ✅ capacitor init
+      - name: Init Capacitor
         run: npx cap init myapp com.myapp.app --web-dir=.
 
-      - name: Add Android
-        run: npx cap add android
-
+      # ✅ IMPORTANT FIX: copy first
       - name: Copy Web Files
         run: npx cap copy
 
+      # ✅ add android properly
+      - name: Add Android Platform
+        run: npx cap add android
+
+      # ✅ sync project
+      - name: Sync Project
+        run: npx cap sync
+
+      # ✅ build apk
       - name: Build APK
         run: |
           cd android
           ./gradlew assembleDebug
 
+      # ✅ upload apk
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
