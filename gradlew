@@ -1,6 +1,4 @@
-#!/usr/bin/env sh
-
-# Gradle start script
+#!/bin/sh
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
