@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       website_url:
+        description: "Enter Website URL"
         required: true
 
 jobs:
@@ -11,34 +12,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      # Checkout repo
+      - name: Checkout
+        uses: actions/checkout@v3
 
+      # Replace URL in app
       - name: Replace URL
         run: |
-          sed -i "s|https://example.com|${{ github.event.inputs.website_url }}|g" app/src/main/java/com/example/webtoapk/MainActivity.java
+          sed -i "s|https://example.com|${{ github.event.inputs.website_url }}|g" app/src/main/java/com/webtoapk/MainActivity.java
 
+      # Setup Java
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
+      # Setup Android SDK
       - name: Setup Android
         uses: android-actions/setup-android@v3
 
-      - name: Permission
+      # Give permission to gradlew
+      - name: Give Permission
         run: chmod +x gradlew
 
+      # Build APK
       - name: Build APK
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Show logs
+      # Show logs (optional but useful)
+      - name: Show Logs
         run: |
           ls
           pwd
 
+      # Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
