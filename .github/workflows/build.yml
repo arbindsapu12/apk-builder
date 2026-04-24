@@ -16,12 +16,15 @@ jobs:
         with:
           node-version: 18
 
+      # ✅ FIX: npm project create
+      - name: Init npm
+        run: npm init -y
+
       - name: Install Capacitor
-        run: npm install -g @capacitor/cli
+        run: npm install @capacitor/core @capacitor/cli
 
       - name: Init Capacitor App
-        run: |
-          npx cap init myapp com.myapp.app --web-dir=.
+        run: npx cap init myapp com.myapp.app --web-dir=.
 
       - name: Add Android
         run: npx cap add android
