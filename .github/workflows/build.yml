@@ -16,36 +16,45 @@ jobs:
         with:
           node-version: 18
 
-      # ✅ npm project create
+      # npm project create
       - name: Init npm
         run: npm init -y
 
+      # install capacitor
       - name: Install Capacitor
         run: npm install @capacitor/core @capacitor/cli
 
-      # ✅ capacitor init
+      # init capacitor
       - name: Init Capacitor
         run: npx cap init myapp com.myapp.app --web-dir=.
 
-      # ✅ IMPORTANT FIX: copy first
+      # 🔥 FIX: android platform force add with logs
+      - name: Add Android Platform
+        run: |
+          npx cap add android
+          ls -la
+          ls -la android || echo "Android folder not created"
+
+      # 🔥 STOP if android not created
+      - name: Check Android Folder
+        run: |
+          if [ ! -d "android" ]; then
+            echo "Android folder missing ❌"
+            exit 1
+          fi
+
+      # copy files
       - name: Copy Web Files
         run: npx cap copy
 
-      # ✅ add android properly
-      - name: Add Android Platform
-        run: npx cap add android
-
-      # ✅ sync project
-      - name: Sync Project
-        run: npx cap sync
-
-      # ✅ build apk
+      # build apk
       - name: Build APK
         run: |
           cd android
+          chmod +x gradlew
           ./gradlew assembleDebug
 
-      # ✅ upload apk
+      # upload apk
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
