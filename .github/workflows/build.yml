@@ -15,9 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Replace URL
-        run: sed -i "s|https://example.com|${{ github.event.inputs.website_url }}|g" app/src/main/java/com/example/webtoapk/MainActivity.java
-
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
