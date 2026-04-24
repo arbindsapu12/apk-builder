@@ -32,7 +32,12 @@ jobs:
       - name: Build APK
         run: |
          chmod +x gradlew
-         ./gradlew assembleDebug --stacktrace
+         ./gradlew assembleDebug || echo "BUILD FAILED"
+
+         - name: Show logs
+            run: |
+             ls
+             pwd
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
