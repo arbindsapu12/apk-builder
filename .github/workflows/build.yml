@@ -43,6 +43,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Fix URL
+        run: |
+          URL="${{ github.event.inputs.website_url }}"
+    
+          if [[ $URL != http* ]]; then
+            URL="https://$URL"
+          fi
+
+          sed -i "s|https://example.com|$URL|g" app/src/main/java/com/example/webtoapk/MainActivity.java
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
