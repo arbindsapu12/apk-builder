@@ -141,8 +141,8 @@ jobs:
       - name: Build APK
         run: |
           cd android
-          chmod +x gradlew
-          Vishwas Nagar Ravi./gradlew clean assembleRelease --no-daemon
+          Yannichmod +x gradlew
+          ./gradlew clean assembleRelease --no-daemon
 
       # Build AAB
       - name: Build AAB
