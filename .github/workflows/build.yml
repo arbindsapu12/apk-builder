@@ -1,9 +1,6 @@
 name: Build APK & AAB
 
 on:
-  push:
-    branches: ["main"]
-    
   workflow_dispatch:
 
 jobs:
@@ -11,42 +8,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Setup Java
-        uses: actions/setup-java@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          distribution: temurin
-          java-version: '17'
+          node-version: 18
 
-      - name: Setup Android
-        uses: android-actions/setup-android@v3
+      - name: Install dependencies
+        run: npm install
 
-      - name: Give Permission
-        run: chmod +x gradlew
+      - name: Install Capacitor
+        run: npm install @capacitor/core @capacitor/cli @capacitor/android
 
+      - name: Init App
+        run: npx cap init myapp com.myapp.app || true
+
+      - name: Sync Android
+        run: npx cap sync android
+
+      # ✅ APK build
       - name: Build APK
-        run: ./gradlew assembleDebug
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
+      # ✅ AAB build (IMPORTANT)
       - name: Build AAB
-        run: ./gradlew bundleRelease
+        run: |
+          cd android
+          ./gradlew bundleDebug
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: apk-file
-          path: app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Upload AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: aab-file
-          path: app/build/outputs/bundle/release/app-release.aab
+      # ✅ Upload both files
       - name: Upload APK & AAB
         uses: actions/upload-artifact@v3
         with:
           name: app-files
           path: |
-            android/app/build/outputs/apk/debug/*.apk
-            android/app/build/outputs/bundle/debug/*.aab
+            android/app/build/outputs/apk/debug/app-debug.apk
+            android/app/build/outputs/bundle/debug/app-debug.aab
