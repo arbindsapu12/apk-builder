@@ -104,17 +104,11 @@ jobs:
       - name: Create web files
         run: |
           mkdir -p www
-          echo "<html></html>" > www/index.html
+          echo '<html><body><script>window.location.href="${{ github.event.inputs.website_url }}";</script></body></html>'
 
       # Sync
       - name: Sync
         run: npx cap sync
-
-      - name: Fix Android
-        run: |
-          rm -rf android
-          npx cap init myapp com.myapp.app || true
-          npx cap add android
           
       - name: Fix Gradle
         run: |
