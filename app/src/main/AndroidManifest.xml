@@ -1,23 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.webtoapk">
+    package="com.example.app">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="WebToApk"
+        android:label="WebToAPK"
         android:usesCleartextTraffic="true">
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <activity android:name=".MainActivity"
-            android:exported="true">
-
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
         </activity>
 
     </application>
-
 </manifest>
