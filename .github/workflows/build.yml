@@ -17,14 +17,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -33,7 +25,7 @@ jobs:
         with:
           node-version: 18
 
-      # ✅ Create package.json
+      # Create package.json
       - name: Create package.json
         run: |
           echo '{
@@ -50,15 +42,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # ✅ Init Capacitor
+      # Init Capacitor
       - name: Init Capacitor
         run: npx cap init myapp com.myapp.app || true
 
-      # ✅ Add Android
+      # Add Android
       - name: Add Android
         run: npx cap add android || true
 
-      # ✅ Use your real website
+      # Use dynamic URL from website
       - name: Set App Config
         run: |
           echo '{
@@ -66,41 +58,35 @@ jobs:
             "appName": "WebToAPK",
             "webDir": "www",
             "server": {
-              "url": "https://webtoapk.online",
+              "url": "${{ github.event.inputs.website_url }}",
               "cleartext": true
             }
           }' > capacitor.config.json
 
-      # ✅ Fix www error
+      # Fix www
       - name: Create web files
         run: |
           mkdir -p www
           echo "<html></html>" > www/index.html
 
-      # ✅ Sync
+      # Sync
       - name: Sync
         run: npx cap sync
 
-      # ✅ Optimize performance
-      - name: Optimize Android
-        run: |
-          echo "android.useAndroidX=true" >> android/gradle.properties
-          echo "org.gradle.daemon=true" >> android/gradle.properties
-
-      # ✅ Build APK
+      # Build APK
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      # ✅ Build AAB
+      # Build AAB
       - name: Build AAB
         run: |
           cd android
           ./gradlew bundleDebug
 
-      # ✅ Upload files (LATEST VERSION)
+      # Upload
       - name: Upload APK & AAB
         uses: actions/upload-artifact@v4
         with:
