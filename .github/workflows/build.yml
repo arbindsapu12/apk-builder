@@ -1,4 +1,4 @@
-name: Build APK
+name: Build APK & AAB
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout
+      # 1. Checkout repo
       - uses: actions/checkout@v4
 
       # 2. Setup Node
@@ -40,12 +40,18 @@ jobs:
             }
           }' > package.json
 
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
 
-      # 5. Init Capacitor
-      - run: npx cap init myapp com.myapp.app
+      # 🔥 5. DELETE OLD ANDROID (VERY IMPORTANT)
+      - name: Delete old android
+        run: rm -rf android
 
-      # 6. Create Web Files
+      # 6. Init Capacitor
+      - name: Init Capacitor
+        run: npx cap init myapp com.myapp.app
+
+      # 7. Create Web Files
       - name: Create Web Files
         run: |
           mkdir -p www
@@ -54,21 +60,40 @@ jobs:
           style="border:none;width:100%;height:100%"></iframe>
           </body></html>' > www/index.html
 
-      # 7. Add Android
-      - run: npx cap add android
+      # 8. Add Android
+      - name: Add Android
+        run: npx cap add android
 
-      # 8. Sync
-      - run: npx cap sync android
+      # 9. Sync
+      - name: Sync
+        run: npx cap sync android
 
-      # 9. Build APK
+      # 10. Build APK
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew clean assembleDebug
 
-      # 10. Upload
-      - uses: actions/upload-artifact@v4
+      # 11. Build AAB
+      - name: Build AAB
+        run: |
+          cd android
+          ./gradlew bundleDebug
+
+      # 12. Check files
+      - name: Find APK & AAB
+        run: |
+          echo "APK files:"
+          find . -name "*.apk"
+          echo "AAB files:"
+          find . -name "*.aab"
+
+      # 13. Upload files
+      - name: Upload APK & AAB
+        uses: actions/upload-artifact@v4
         with:
-          name: app-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: app-files
+          path: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+            android/app/build/outputs/bundle/debug/app-debug.aab
