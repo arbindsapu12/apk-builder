@@ -86,6 +86,14 @@ jobs:
            }
          }' > capacitor.config.json
 
+      - name: Set App Icon
+        run: |
+          mkdir -p resources
+          curl -L "${{ github.event.inputs.icon_url }}" -o resources/icon.png || true
+
+      - name: Set Splash Screen
+        run: |
+          curl -L "${{ github.event.inputs.splash_url }}" -o resources/splash.png || true
       # Fix www
       - name: Create web files
         run: |
@@ -99,21 +107,20 @@ jobs:
       # Build APK
       - name: Build APK
         run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
+         cd android
+         chmod +x gradlew
+         ./gradlew assembleRelease
 
       # Build AAB
       - name: Build AAB
         run: |
           cd android
-          ./gradlew bundleDebug
+          ./gradlew bundleRelease
 
-      # Upload
       - name: Upload APK & AAB
         uses: actions/upload-artifact@v4
         with:
           name: app-files
           path: |
-            android/app/build/outputs/apk/debug/app-debug.apk
-            android/app/build/outputs/bundle/debug/app-debug.aab
+            android/app/build/outputs/apk/release/app-release.apk
+            android/app/build/outputs/bundle/release/app-release.aab
