@@ -107,7 +107,7 @@ jobs:
           echo '<html><body><script>window.location.href="${{ github.event.inputs.website_url }}";</script></body></html>'
 
       - name: Create Web Files
-        run:
+        run: |
           mkdir -p www
           echo '<html><body><script>window.location.href="${{ github.event.inputs.website_url }}";</script></body></html>' > www/index.html
           ls -la www
