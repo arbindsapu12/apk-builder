@@ -112,9 +112,10 @@ jobs:
 
       - name: Fix Android
         run: |
-         rm -rf android
-         npx cap add android
-
+          rm -rf android
+          npx cap init myapp com.myapp.app || true
+          npx cap add android
+          
       - name: Fix Gradle
         run: |
          echo "org.gradle.jvmargs=-Xmx2048m" >> android/gradle.properties
