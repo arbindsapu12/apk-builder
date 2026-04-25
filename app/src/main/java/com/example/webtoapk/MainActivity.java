@@ -10,17 +10,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState); WebView webView = new WebView(this);
+setContentView(webView);
 
-        WebView webView = new WebView(this);
+WebView webView = new WebView(this);
+setContentView(webView);
 
-        WebSettings settings = webView.getSettings();
-        settings.setJavaScriptEnabled(true);
-        settings.setDomStorageEnabled(true);
+WebSettings settings = webView.getSettings();
+settings.setJavaScriptEnabled(true);
+settings.setDomStorageEnabled(true);
 
-        webView.setWebViewClient(new WebViewClient());
+// 👇 YE ADD KARNA MOST IMPORTANT
+webView.setWebViewClient(new WebViewClient());
 
-        webView.loadUrl("https://example.com");
+// 👇 TEST ke liye pehle ye use karo
+webView.loadUrl("https://google.com");
 
         setContentView(webView);
     }
