@@ -1,14 +1,26 @@
-import android.app.Activity;
-import android.os.Bundle;
-import android.widget.TextView;
+package com.example.app;
 
-public class MainActivity extends Activity {
+import android.os.Bundle;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.webkit.WebSettings;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        TextView text = new TextView(this);
-        text.setText("APP WORKING");
-        setContentView(text);
+        WebView webView = new WebView(this);
+        setContentView(webView);
+
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+
+        webView.setWebViewClient(new WebViewClient());
+
+        webView.loadUrl("https://webtoapk.online");
     }
 }
