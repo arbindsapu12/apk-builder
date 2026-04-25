@@ -76,15 +76,15 @@ jobs:
       # Use dynamic URL from website
       - name: Set App Config
         run: |
-          echo '{
-            "appId": "com.myapp.app",
-            "appName": "WebToAPK",
-            "webDir": "www",
-            "server": {
-              "url": "${{ github.event.inputs.website_url }}",
-              "cleartext": true
-            }
-          }' > capacitor.config.json
+         echo '{
+           "appId": "${{ github.event.inputs.package_id }}",
+           "appName": "${{ github.event.inputs.app_name }}",
+           "webDir": "www",
+           "server": {
+             "url": "${{ github.event.inputs.website_url }}",
+             "cleartext": true
+           }
+         }' > capacitor.config.json
 
       # Fix www
       - name: Create web files
