@@ -173,7 +173,7 @@ jobs:
         with:
           name: app-files
           path: |
-            android/app/build/outputs/apk/release/app-release.apk
+            android/app/build/outputs/apk/release/app-release-unsigned.apk
             android/app/build/outputs/bundle/release/app-release.aab
 
       - name: Print Download Info
