@@ -1,71 +1,33 @@
 name: Build APK
 
 on:
-  push:
-    branches: ["main"]
-
   workflow_dispatch:
     inputs:
-      project_id:
-        description: "Project ID"
-        required: false
-      app_name:
-        description: "App Name"
-        required: false
       website_url:
         description: "Website URL"
         required: true
-      package_id:
-        description: "Package ID"
-        required: false
-      icon_url:
-        description: "Icon URL"
-        required: false
-      splash_url:
-        description: "Splash URL"
-        required: false
-      webhook_url:
-        description: "Webhook URL"
-        required: false
-      webhook_secret:
-        description: "Webhook Secret"
-        required: false
-      supabase_url:
-        description: "Supabase URL"
-        required: false
-      supabase_service_key:
-        description: "Supabase Key"
-        required: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout
       - uses: actions/checkout@v4
 
-      - name: Fix URL
-        run: |
-          URL="${{ github.event.inputs.website_url }}"
-    
-          if [[ $URL != http* ]]; then
-            URL="https://$URL"
-          fi
-
-          sed -i "s|https://example.com|$URL|g" app/src/main/java/com/example/webtoapk/MainActivity.java
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      # 2. Setup Node
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      # 3. Setup Java
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # Create package.json
-      - name: Create package.json
+      # 4. Create package.json
+      - name: Setup Project
         run: |
           echo '{
             "name": "webtoapk",
@@ -78,104 +40,35 @@ jobs:
             }
           }' > package.json
 
-      - name: Install dependencies
-        run: npm install
+      - run: npm install
 
-      # Init Capacitor
-      - name: Init Capacitor
-        run: npx cap init myapp com.myapp.app || true
+      # 5. Init Capacitor
+      - run: npx cap init myapp com.myapp.app
 
-      # Add Android
-      - name: Add Android
-        run: npx cap add android || true
-
-      # Use dynamic URL from website
-      - name: Set App Config
-        run: |
-         echo '{
-           "appId": "${{ github.event.inputs.package_id }}",
-           "appName": "${{ github.event.inputs.app_name }}",
-           "webDir": "www",
-           "server": {
-             "url": "${{ github.event.inputs.website_url }}",
-             "cleartext": true
-           }
-         }' > capacitor.config.json
-
-      - name: Set App Icon
-        run: |
-          mkdir -p resources
-          curl -L "${{ github.event.inputs.icon_url }}" -o resources/icon.png || true
-
-      - name: Set Splash Screen
-        run: |
-          curl -L "${{ github.event.inputs.splash_url }}" -o resources/splash.png || true
-      # Fix www
-      - name: Create web files
-        run: |
-          mkdir -p www
-          echo '<html><body><script>window.location.href="${{ github.event.inputs.website_url }}";</script></body></html>'
-
+      # 6. Create Web Files
       - name: Create Web Files
         run: |
           mkdir -p www
-          echo '<html><body><script>window.location.href="${{ github.event.inputs.website_url }}";</script></body></html>' > www/index.html
-          ls -la www
-          
-      # Sync
-      - name: Sync
-        run: npx cap sync android
-          
-      - name: Fix Gradle
-        run: |
-         echo "org.gradle.jvmargs=-Xmx2048m" >> android/gradle.properties
-# 👇 YAHA ADD KARNA HAI (NEW CODE)
+          echo '<html><body style="margin:0">
+          <iframe src="${{ github.event.inputs.website_url }}" 
+          style="border:none;width:100%;height:100%"></iframe>
+          </body></html>' > www/index.html
 
-      - name: Generate Keystore
-        run: |
-          keytool -genkey -v -keystore android/app/my-release-key.jks \
-          -storepass password123 \
-          -keypass password123 \
-          -alias my-key-alias \
-          -keyalg RSA -keysize 2048 -validity 10000 \
-          -dname "CN=MyApp, OU=Dev, O=MyOrg, L=City, S=State, C=IN"
+      # 7. Add Android
+      - run: npx cap add android
 
-      - name: Setup Signing
-        run: |
-          echo "MYAPP_UPLOAD_STORE_FILE=my-release-key.jks" >> android/gradle.properties
-          echo "MYAPP_UPLOAD_KEY_ALIAS=my-key-alias" >> android/gradle.properties
-          echo "MYAPP_UPLOAD_STORE_PASSWORD=password123" >> android/gradle.properties
-          echo "MYAPP_UPLOAD_KEY_PASSWORD=password123" >> android/gradle.properties
+      # 8. Sync
+      - run: npx cap sync android
 
-# 👇 PHIR YE RAHEGA (existing code)
+      # 9. Build APK
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew clean assembleDebug --no-daemon
+          ./gradlew clean assembleDebug
 
-      - name: Build AAB
-        run: |
-          cd android
-          ./gradlew bundleDebug
-          
-      - name: Find APK & AAB
-        run: |
-          echo "Searching APK..."
-          find . -name "*.apk"
-
-          echo "Searching AAB..."
-          find . -name "*.aab"   
-
-      - name: Upload APK & AAB
-        uses: actions/upload-artifact@v4
+      # 10. Upload
+      - uses: actions/upload-artifact@v4
         with:
-          name: app-files
-          path: |
-            android/app/build/outputs/apk/debug/app-debug.apk
-            android/app/build/outputs/bundle/debug/app-debug.aab
-
-      - name: Print Download Info
-        run: |
-          echo "APK and AAB files uploaded successfully!"
-          echo "Go to Actions > Artifacts to download files"
+          name: app-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
