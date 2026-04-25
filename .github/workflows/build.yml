@@ -37,6 +37,11 @@ jobs:
       - name: Add Android
         run: npx cap add android || true
 
+      - name: Create web files
+        run: |
+          mkdir www
+          echo "<html><body><h1>My App</h1></body></html>" > www/index.html
+
       - name: Sync
         run: npx cap sync
 
