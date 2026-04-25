@@ -106,9 +106,14 @@ jobs:
           mkdir -p www
           echo '<html><body><script>window.location.href="${{ github.event.inputs.website_url }}";</script></body></html>'
 
+      - name: Create Web Files
+        run:
+          mkdir -p www
+          echo '<html><body><script>window.location.href="${{ github.event.inputs.website_url }}";</script></body></html>' > www/index.html
+
       # Sync
       - name: Sync
-        run: npx cap sync
+        run: npx cap sync android
           
       - name: Fix Gradle
         run: |
