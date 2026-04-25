@@ -1,4 +1,4 @@
-name: Build APK
+Okay Nara bhainame: Build APK
 
 on:
   push:
@@ -141,7 +141,7 @@ jobs:
       - name: Build APK
         run: |
           cd android
-          Yannichmod +x gradlew
+          chmod +x gradlew
           ./gradlew clean assembleRelease --no-daemon
 
       # Build AAB
