@@ -110,6 +110,11 @@ jobs:
       - name: Sync
         run: npx cap sync
 
+      - name: Fix Android
+        run: |
+         rm -rf android
+         npx cap add android
+
       - name: Fix Gradle
         run: |
          echo "org.gradle.jvmargs=-Xmx2048m" >> android/gradle.properties
@@ -136,7 +141,7 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon
+          Vishwas Nagar Ravi./gradlew clean assembleRelease --no-daemon
 
       # Build AAB
       - name: Build AAB
