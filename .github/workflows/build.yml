@@ -1,4 +1,4 @@
-Okay Nara bhainame: Build APK
+name: Build APK
 
 on:
   push:
