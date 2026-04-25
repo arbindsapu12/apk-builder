@@ -160,6 +160,14 @@ jobs:
           cd android
           ./gradlew bundleRelease
 
+      - name: Find APK & AAB
+        run: |
+          echo "Searching APK..."
+          find . -name "*.apk"
+
+          echo "Searching AAB..."
+          find . -name "*.aab"   
+
       - name: Upload APK & AAB
         uses: actions/upload-artifact@v4
         with:
