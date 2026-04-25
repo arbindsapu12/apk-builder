@@ -1,13 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.app">
+    package="com.example.webtoapk">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="WebToAPK"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:label="WebToAPK">
 
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
 
             <intent-filter>
@@ -18,4 +18,5 @@
         </activity>
 
     </application>
+
 </manifest>
