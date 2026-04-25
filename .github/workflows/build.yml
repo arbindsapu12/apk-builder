@@ -55,7 +55,7 @@ jobs:
 
       - name: Create web files
         run: |
-          mkdir www
+          mkdir -p www
           echo "<html><body><h1>My App</h1></body></html>" > www/index.html
 
       - name: Sync
