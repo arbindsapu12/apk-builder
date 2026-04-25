@@ -1,5 +1,3 @@
-package com.example.app;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
@@ -13,6 +11,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         WebView webView = new WebView(this);
+        webView.setBackgroundColor(0xFFFFFFFF);
         setContentView(webView);
 
         WebSettings settings = webView.getSettings();
@@ -21,6 +20,6 @@ public class MainActivity extends Activity {
 
         webView.setWebViewClient(new WebViewClient());
 
-        webView.loadUrl("https://www.google.com");
+        webView.loadUrl("https://example.com"); // light site test
     }
 }
