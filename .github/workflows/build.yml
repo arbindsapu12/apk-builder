@@ -167,3 +167,8 @@ jobs:
           path: |
             android/app/build/outputs/apk/release/app-release.apk
             android/app/build/outputs/bundle/release/app-release.aab
+
+      - name: Print Download Info
+        run: |
+          echo "APK and AAB files uploaded successfully!"
+          echo "Go to Actions > Artifacts to download files"
