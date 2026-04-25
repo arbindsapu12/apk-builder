@@ -37,6 +37,22 @@ jobs:
       - name: Add Android
         run: npx cap add android || true
 
+      - name: Set App URL
+        run: |
+         echo '{
+           "appId": "com.myapp.app",
+           "appName": "MyApp",
+           "webDir": "www",
+           "server": {
+           "url": "https://webtoapk.online",
+           "cleartext": true
+           }
+         }' > capacitor.config.json
+      - name: Create web files
+        run: |
+          mkdir -p www
+          echo "<html></html>" > www/index.html
+
       - name: Create web files
         run: |
           mkdir www
